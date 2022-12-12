@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"cotacao-dolar/server/create_connection"
 )
 
 type CotationResponse struct {
@@ -39,20 +38,6 @@ type Cotation struct {
 	Ask        string `json:"ask"`
 	Timestamp  string `json:"timestamp"`
 	CreateDate string `json:"create_date"`
-}
-
-func createConnection() *gorm.DB {
-	var db *gorm.DB
-	var err error
-
-	dsn := "user=postgres host=localhost dbname=postgres password=postgres port=5435 sslmode=disable"
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		panic("Failed to connect to database!")
-	}
-
-	return db
 }
 
 func GetDollarCotation(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +82,7 @@ func GetDollarCotation(w http.ResponseWriter, r *http.Request) {
 		CreateDate: cotationResponse.Usdbrl.CreateDate,
 	}
 
-	db := createConnection()
+	db := create_connection.CreateConnection()
 	db.WithContext(ctx2).Create(newCotation)
 
 	w.Write(parsedBody)
