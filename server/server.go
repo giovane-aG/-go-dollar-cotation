@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -85,7 +86,8 @@ func GetDollarCotation(w http.ResponseWriter, r *http.Request) {
 	db := create_connection.CreateConnection()
 	db.WithContext(ctx2).Create(newCotation)
 
-	w.Write(parsedBody)
+	apiResponse := fmt.Sprintf("dollar: %s", cotationResponse.Usdbrl.Bid)
+	w.Write([]byte(apiResponse))
 }
 
 func main() {
